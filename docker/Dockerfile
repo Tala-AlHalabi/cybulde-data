@@ -12,8 +12,8 @@ ENV \
   PYTHONPATH="/app:${PYTHONPATH}" \
   BUILD_POETRY_LOCK="${HOME}/poetry.lock.build"
 
-RUN apt-get -qq update \
-    && apt-get -qq -y install vim gcc curl git build-essential libb64-dev software-properties-common \
+RUN apt-get -o Acquire::ForceIPv4=true -qq update \
+    && apt-get -o Acquire::ForceIPv4=true -qq -y install vim gcc curl git build-essential libb64-dev software-properties-common \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get -qq -y clean
 
