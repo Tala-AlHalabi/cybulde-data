@@ -10,6 +10,8 @@ from cybulde.utils.utils import get_logger
 def version_data(config: Config) -> None:
     initialize_dvc()
 
+    initialize_dvc_storage(config.dvc_remote_name, config.dvc_remote_url)
+
 
 if __name__ == "__main__":
     version_data()
