@@ -1,10 +1,9 @@
-version: "3.8"
-
 services:
   app:
     user: "${USER_ID:-1000}"
     hostname: "${HOST_NAME:-emkademy}"
     image: cybulde-data
+    platform: linux/amd64
     container_name: cybulde-data-container
     build:
       context: .
@@ -17,8 +16,18 @@ services:
       - ~/.config/gcloud/:/home/${USER_NAME:-kyuksel}/.config/gcloud
       - ~/.ssh:/home/${USER_NAME:-kyuksel}/.ssh
     ports:
-      - 8888:8888
+      - 8080:8080
+    # Keep container running (FIX FOR CONTAINER EXITING)
+    command: ["sleep", "infinity"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     ipc: host
     init: true
+    
 
 

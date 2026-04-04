@@ -35,11 +35,20 @@ USER ${USER_NAME}
 COPY pyproject.toml *.lock /app/
 WORKDIR /app
 
+# Set up Python virtualenv and configure Poetry
 RUN poetry config virtualenvs.create false \
-    && python3.10 -m venv ${VIRTUAL_ENV} \
-    && pip install --upgrade pip setuptools \
-    && poetry install && cp poetry.lock ${BUILD_POETRY_LOCK} \
-    && rm -rf ${HOME}/.cache/*
+    && poetry config installer.parallel false \
+    && poetry config installer.max-workers 3 \
+    && python3.10 -m venv ${VIRTUAL_ENV}
+
+# Increase timeouts for slow networks
+ENV POETRY_HTTP_TIMEOUT=600 \
+    PIP_DEFAULT_TIMEOUT=600 \
+    PIP_RETRIES=10 \
+    PIP_NO_CACHE_DIR=off
+
+# Install dependencies from lock file
+RUN poetry install --no-root --no-interaction --no-ansi
 
 USER root
 COPY ./docker/scripts/* /
